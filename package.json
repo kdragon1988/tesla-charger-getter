@@ -1,0 +1,29 @@
+{
+  "name": "tesla-charger-getter",
+  "version": "1.0.0",
+  "description": "Tesla オンラインショップの在庫を常駐監視し、在庫API直叩きで再入荷を即座に検知・通知する macOS 用ツール",
+  "type": "module",
+  "main": "src/monitor.js",
+  "scripts": {
+    "setup": "./setup.sh",
+    "start": "./start.sh",
+    "monitor": "node src/monitor.js --attach",
+    "once": "node src/monitor.js --attach --once",
+    "drill": "node drill-alert.mjs",
+    "test": "node test-judge.mjs"
+  },
+  "keywords": [
+    "tesla",
+    "stock-monitor",
+    "inventory",
+    "playwright",
+    "macos",
+    "akamai",
+    "charger"
+  ],
+  "author": "kdragon1988",
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.60.0"
+  }
+}

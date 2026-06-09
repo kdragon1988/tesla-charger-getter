@@ -1,0 +1,19 @@
+# 依存関係
+node_modules/
+
+# ブラウザの永続プロファイル（Cookie / ログイン情報を含むためコミットしない）
+.user-data/
+.browser-data/
+
+# ログ
+logs/
+*.log
+
+# Playwright MCP の作業ディレクトリ
+.playwright-mcp/
+
+# OS / エディタの生成物
+.DS_Store
+*.swp
+.idea/
+.vscode/
