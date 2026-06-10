@@ -26,6 +26,8 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 /**
  * プラットフォームごとの Chrome / Edge 実行ファイル候補パスを返す（純粋関数）。
  * 先頭に近いほど優先される。
+ * 対象プラットフォームの区切り文字（posix / win32）を明示して結合するため、
+ * どの OS 上で実行しても同じ結果を返す（CI でのクロスプラットフォームテスト対応）。
  * @param {string} platform process.platform 互換（"darwin" | "win32" | "linux"）
  * @param {object} env process.env 互換
  * @returns {string[]}
@@ -35,7 +37,10 @@ export function chromeCandidatePaths(platform, env) {
     const home = env.HOME ?? "";
     return Object.freeze([
       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-      path.join(home, "Applications/Google Chrome.app/Contents/MacOS/Google Chrome"),
+      path.posix.join(
+        home,
+        "Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+      ),
     ]);
   }
 
@@ -46,12 +51,12 @@ export function chromeCandidatePaths(platform, env) {
       env["LOCALAPPDATA"],
     ].filter(Boolean);
     const chromePaths = bases.map((base) =>
-      path.join(base, "Google", "Chrome", "Application", "chrome.exe")
+      path.win32.join(base, "Google", "Chrome", "Application", "chrome.exe")
     );
     // Chrome が無い環境向けフォールバック: Microsoft Edge（Chromium ベースで CDP 対応）。
     const edgeBases = [env["PROGRAMFILES(X86)"], env["PROGRAMFILES"]].filter(Boolean);
     const edgePaths = edgeBases.map((base) =>
-      path.join(base, "Microsoft", "Edge", "Application", "msedge.exe")
+      path.win32.join(base, "Microsoft", "Edge", "Application", "msedge.exe")
     );
     return Object.freeze([...chromePaths, ...edgePaths]);
   }

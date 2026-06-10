@@ -5,7 +5,6 @@
 // 実行: node test-app-units.mjs
 
 import assert from "node:assert/strict";
-import path from "node:path";
 import { chromeCandidatePaths } from "./electron/chrome-launcher.js";
 import {
   defaultSettings,
@@ -49,9 +48,15 @@ test("win32: Chrome 候補 → Edge フォールバックの順になる", () =>
   };
   const paths = chromeCandidatePaths("win32", env);
   assert.equal(paths.length, 5);
-  assert.ok(paths[0].includes(path.join("Google", "Chrome")));
+  assert.equal(
+    paths[0],
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+  );
   assert.ok(paths[2].includes("AppData"));
-  assert.ok(paths[3].includes(path.join("Microsoft", "Edge")));
+  assert.equal(
+    paths[3],
+    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+  );
 });
 
 test("win32: 環境変数が無いものはスキップされる", () => {
