@@ -1,6 +1,9 @@
 # 依存関係
 node_modules/
 
+# electron-builder の成果物
+dist/
+
 # ブラウザの永続プロファイル（Cookie / ログイン情報を含むためコミットしない）
 .user-data/
 .browser-data/

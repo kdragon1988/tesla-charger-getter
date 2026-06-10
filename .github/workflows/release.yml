@@ -1,0 +1,62 @@
+# .github/workflows/release.yml
+# v* タグの push（または手動実行）で Mac 用 DMG / Windows 用インストーラ EXE をビルドし、
+# タグの場合は GitHub Releases に添付する。
+# コード署名は行わない（未署名配布。README のインストール手順で警告の回避方法を案内）。
+name: Build Desktop Apps
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            build_args: --mac
+          - os: windows-latest
+            build_args: --win
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Build installers
+        run: npx electron-builder ${{ matrix.build_args }} --publish never
+        env:
+          # 署名証明書の自動検出を無効化（未署名ビルド）。
+          CSC_IDENTITY_AUTO_DISCOVERY: "false"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: installers-${{ matrix.os }}
+          path: |
+            dist/*.dmg
+            dist/*.exe
+          if-no-files-found: error
+
+      - name: Attach to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.dmg
+            dist/*.exe

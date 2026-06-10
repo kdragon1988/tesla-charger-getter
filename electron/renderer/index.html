@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self'; style-src 'self'; script-src 'self'"
+  />
+  <title>Tesla充電器Getter</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🔌 Tesla充電器Getter</h1>
+    <span id="status-badge" class="badge idle">待機中</span>
+  </header>
+
+  <main>
+    <section class="controls">
+      <button id="btn-start" class="primary">▶ 監視開始</button>
+      <button id="btn-stop" disabled>■ 停止</button>
+      <button id="btn-test">🔔 アラートテスト</button>
+      <span id="last-check" class="last-check"></span>
+    </section>
+
+    <p id="chrome-hint" class="hint warn hidden">
+      ⚠️ Google Chrome が見つかりません。https://www.google.com/chrome/ からインストールしてください。
+    </p>
+    <p class="hint">
+      💡 監視開始後に開く「監視用 Chrome」で一度 Tesla にログインしておくと、在庫復活時にワンクリックで購入できます。
+    </p>
+
+    <section class="settings">
+      <h2>設定</h2>
+      <label>
+        商品ページURL
+        <input id="input-url" type="text" spellcheck="false" />
+      </label>
+      <label>
+        SKU（商品コード）
+        <input id="input-sku" type="text" spellcheck="false" />
+      </label>
+      <div class="row">
+        <label class="inline">
+          チェック間隔（秒）最小
+          <input id="input-min" type="number" min="5" max="600" />
+        </label>
+        <label class="inline">
+          〜 最大
+          <input id="input-max" type="number" min="5" max="600" />
+        </label>
+        <button id="btn-save">保存</button>
+      </div>
+      <p id="settings-message" class="hint"></p>
+    </section>
+
+    <section class="log">
+      <h2>ログ</h2>
+      <pre id="log-view"></pre>
+    </section>
+  </main>
+
+  <footer>
+    在庫が復活すると、通知・アラーム音・日本語音声・商品ページ自動オープンでお知らせします。ウィンドウを閉じると監視も停止します。
+  </footer>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

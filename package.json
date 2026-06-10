@@ -1,23 +1,30 @@
 {
   "name": "tesla-charger-getter",
-  "version": "1.0.0",
-  "description": "Tesla オンラインショップの在庫を常駐監視し、在庫API直叩きで再入荷を即座に検知・通知する macOS 用ツール",
+  "version": "1.1.0",
+  "description": "Tesla オンラインショップの在庫を常駐監視し、在庫API直叩きで再入荷を即座に検知・通知するツール（Mac / Windows 対応デスクトップアプリ + macOS CLI）",
   "type": "module",
-  "main": "src/monitor.js",
+  "main": "electron/main.js",
   "scripts": {
     "setup": "./setup.sh",
     "start": "./start.sh",
     "monitor": "node src/monitor.js --attach",
     "once": "node src/monitor.js --attach --once",
     "drill": "node drill-alert.mjs",
-    "test": "node test-judge.mjs"
+    "test": "node test-judge.mjs && node test-app-units.mjs",
+    "app": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --mac --win",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win"
   },
   "keywords": [
     "tesla",
     "stock-monitor",
     "inventory",
     "playwright",
+    "electron",
     "macos",
+    "windows",
     "akamai",
     "charger"
   ],
@@ -25,5 +32,55 @@
   "license": "MIT",
   "dependencies": {
     "playwright": "^1.60.0"
+  },
+  "devDependencies": {
+    "electron": "^42.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.kdragon1988.tesla-charger-getter",
+    "productName": "TeslaChargerGetter",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "src/**/*",
+      "!**/*.sh",
+      "!logs/**",
+      "!.user-data/**",
+      "!.playwright-mcp/**"
+    ],
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ]
+    },
+    "dmg": {
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "oneClick": true,
+      "perMachine": false,
+      "deleteAppDataOnUninstall": false
+    }
   }
 }
